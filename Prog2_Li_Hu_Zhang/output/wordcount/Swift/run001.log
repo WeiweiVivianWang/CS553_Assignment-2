@@ -1,0 +1,277 @@
+2014-10-25 05:28:17,464+0000 INFO  Loader VERSION Swift 0.95 RC6 swift-r7900 cog-r3908
+2014-10-25 05:28:17,516+0000 INFO  Loader RUN_ID run001
+2014-10-25 05:28:17,516+0000 INFO  Loader ARGUMENTS [-runid, run001, -logfile, /home/ubuntu/swift/run001/run001.log, -config, /home/ubuntu/swift/run001/cf, wordcount.swift]
+2014-10-25 05:28:17,516+0000 INFO  Loader MAX_HEAP 1037959168
+2014-10-25 05:28:17,516+0000 INFO  Loader GLOBUS_HOSTNAME ip-172-31-24-22
+2014-10-25 05:28:17,516+0000 INFO  Loader CWD /home/ubuntu/swift/.
+2014-10-25 05:28:17,517+0000 DEBUG Loader SWIFT_CONFIGURATION Swift configuration ([/home/ubuntu/swift/run001/cf]): {pgraph.node.options=color="seagreen", style="filled", clustering.min.time=60, clustering.queue.delay=4, sites.file=/home/ubuntu/app/swift-0.95-RC6/etc/sites.xml, ticker.prefix=Progress: , provenance.log=false, kickstart.enabled=maybe, tc.file=/home/ubuntu/app/swift-0.95-RC6/etc/tc.data, foreach.max.threads=16384, lazy.errors=false, ticker.date.format=, sitedir.keep=false, throttle.score.job.factor=0.2, kickstart.always.transfer=false, throttle.host.submit=2, replication.limit=3, clustering.enabled=false, pgraph=false, file.gc.enabled=true, replication.min.queue.time=60, wrapper.parameter.mode=args, replication.enabled=false, throttle.transfers=4, wrapperlog.always.transfer=false, throttle.submit=4, pgraph.graph.options=splines="compound", rankdir="TB", caching.algorithm=LRU, use.wrapper.staging=false, tracing.enabled=true, provider.staging.pin.swiftfiles=false, wrapper.invocation.mode=absolute, mapping.checker=on, execution.retries=0, cdm.broadcast.mode=file, status.mode=files, use.provider.staging=false, throttle.file.operations=8}
+2014-10-25 05:28:17,533+0000 INFO  Loader SITES_FILE /home/ubuntu/app/swift-0.95-RC6/etc/sites.xml
+2014-10-25 05:28:17,534+0000 DEBUG textfiles BEGIN SITES:
+<?xml version="1.0" encoding="UTF-8"?>
+<config xmlns="http://www.ci.uchicago.edu/swift/SwiftSites">
+
+<!-- sites.xml specifies details of the sites that Swift can run on.
+
+The entry for localhost should work on most linux-like systems
+without any change.
+
+It may be necessary to change /var/tmp to a different
+working directory.
+
+The jobThrottle profile is set to 0 so that Swift will not try to run more
+than two jobs at once (the minimum) when using the local sites. This is
+appropriate for local execution, but make sure if/when using another
+execution mechanism to submit to an HPC resource that this jobThrottle
+is updated.
+
+-->
+
+  <pool handle="localhost">
+    <filesystem provider="local" />
+    <execution provider="local" />
+    <workdirectory >/var/tmp</workdirectory>
+    <profile namespace="karajan" key="jobThrottle">0</profile>
+  </pool>
+
+</config>
+
+
+2014-10-25 05:28:17,534+0000 DEBUG textfiles END SITES:
+2014-10-25 05:28:17,534+0000 INFO  Loader TC_FILE /home/ubuntu/app/swift-0.95-RC6/etc/tc.data
+2014-10-25 05:28:17,534+0000 DEBUG textfiles BEGIN TC:
+* * * INSTALLED INTEL32::LINUX null
+
+
+2014-10-25 05:28:17,534+0000 DEBUG textfiles END TC:
+2014-10-25 05:28:17,535+0000 DEBUG textfiles BEGIN SWIFTSCRIPT:
+type file;
+file fmapper <"wordcount/Mapper.py">;
+file freducer <"wordcount/Reducer.py">;
+app (file cout) map (file pyfile, file datafile)
+{
+	python @pyfile @datafile stdout=@filename(cout);
+}
+
+app (file cout) reduce (file pyfile, file intermediatefile)
+{
+	python @pyfile @intermediatefile stdout=@filename(cout);
+}
+
+file inputfile <single_file_mapper; file="input/dataset">;
+file cout <"output/intermediate.txt">;
+cout = map (fmapper, inputfile);
+
+file cout2 <"output/WordCount-swift.txt">;
+cout2 = reduce (freducer,cout);
+
+
+
+2014-10-25 05:28:17,535+0000 DEBUG textfiles END SWIFTSCRIPT:
+2014-10-25 05:28:17,535+0000 DEBUG Loader kmlversion is >c9ebfc39-ad69-436e-8c46-06a6f9fc354d-no-provenance<
+2014-10-25 05:28:17,535+0000 DEBUG Loader build version is >c9ebfc39-ad69-436e-8c46-06a6f9fc354d-no-provenance<
+2014-10-25 05:28:17,535+0000 DEBUG Loader Recompilation suppressed.
+2014-10-25 05:28:22,530+0000 INFO  Loader RUN_START
+2014-10-25 05:28:22,533+0000 INFO  SwiftExecutor swift.home = /home/ubuntu/app/swift-0.95-RC6
+2014-10-25 05:28:22,611+0000 INFO  swift Using sites file: /home/ubuntu/app/swift-0.95-RC6/etc/sites.xml
+2014-10-25 05:28:22,744+0000 INFO  swift Using tc.data: /home/ubuntu/app/swift-0.95-RC6/etc/tc.data
+2014-10-25 05:28:23,390+0000 INFO  AbstractScheduler Setting resources to: {localhost=localhost}
+2014-10-25 05:28:23,567+0000 INFO  TRACE Variable declaration, line 12, thread R, null = input/dataset
+2014-10-25 05:28:23,657+0000 INFO  TRACE VARIABLE, line 2, thread R, fmapper INITIALIZED <SingleFileMapper; , file = file://localhost/wordcount/Mapper.py>
+2014-10-25 05:28:23,658+0000 INFO  TRACE VARIABLE, line 2, thread R, fmapper INITIALIZED <SingleFileMapper; , file = file://localhost/wordcount/Mapper.py>
+2014-10-25 05:28:23,658+0000 INFO  TRACE VARIABLE, line 2, thread R, fmapper MAPPING $, file://localhost/wordcount/Mapper.py
+2014-10-25 05:28:23,659+0000 INFO  TRACE Variable declaration, line 2, thread R, fmapper <SingleFileMapper; , file = file://localhost/wordcount/Mapper.py>
+2014-10-25 05:28:23,659+0000 INFO  TRACE VARIABLE, line 3, thread R, freducer INITIALIZED <SingleFileMapper; , file = file://localhost/wordcount/Reducer.py>
+2014-10-25 05:28:23,659+0000 INFO  TRACE VARIABLE, line 3, thread R, freducer INITIALIZED <SingleFileMapper; , file = file://localhost/wordcount/Reducer.py>
+2014-10-25 05:28:23,659+0000 INFO  TRACE VARIABLE, line 3, thread R, freducer MAPPING $, file://localhost/wordcount/Reducer.py
+2014-10-25 05:28:23,659+0000 INFO  TRACE Variable declaration, line 3, thread R, freducer <SingleFileMapper; , file = file://localhost/wordcount/Reducer.py>
+2014-10-25 05:28:23,659+0000 INFO  TRACE Variable declaration, line 24, thread R, swift#mapper#17000 org.griphyn.vdl.mapping.NullMapper@d2abdbf
+2014-10-25 05:28:23,660+0000 INFO  TRACE Variable declaration, line 28, thread R, null = input/dataset
+2014-10-25 05:28:23,676+0000 INFO  TRACE VARIABLE, line 14, thread R, inputfile INITIALIZED <SingleFileMapper; , file = file://localhost/input/dataset>
+2014-10-25 05:28:23,676+0000 INFO  TRACE VARIABLE, line 14, thread R, inputfile INITIALIZED <SingleFileMapper; , file = file://localhost/input/dataset>
+2014-10-25 05:28:23,676+0000 INFO  TRACE VARIABLE, line 14, thread R, inputfile MAPPING $, file://localhost/input/dataset
+2014-10-25 05:28:23,676+0000 INFO  TRACE Variable declaration, line 14, thread R, inputfile <SingleFileMapper; , file = file://localhost/input/dataset>
+2014-10-25 05:28:23,677+0000 INFO  TRACE VARIABLE, line 15, thread R, cout INITIALIZED <SingleFileMapper; , file = file://localhost/output/intermediate.txt>
+2014-10-25 05:28:23,677+0000 INFO  TRACE Variable declaration, line 15, thread R, cout <SingleFileMapper; , file = file://localhost/output/intermediate.txt>
+2014-10-25 05:28:23,677+0000 INFO  TRACE VARIABLE, line 18, thread R, cout2 INITIALIZED <SingleFileMapper; , file = file://localhost/output/WordCount-swift.txt>
+2014-10-25 05:28:23,677+0000 INFO  TRACE Variable declaration, line 18, thread R, cout2 <SingleFileMapper; , file = file://localhost/output/WordCount-swift.txt>
+2014-10-25 05:28:23,743+0000 INFO  TRACE APPCALL, line 4, thread R-2, map()
+2014-10-25 05:28:23,744+0000 DEBUG swift PROCEDURE line=4 thread=R-2 name=map
+2014-10-25 05:28:23,762+0000 INFO  RuntimeStats$ProgressTicker 
+2014-10-25 05:28:23,762+0000 INFO  RuntimeStats$ProgressTicker HeapMax: 1037959168, CrtHeap: 15794176, UsedHeap: 8311848
+2014-10-25 05:28:23,762+0000 INFO  TRACE ASSIGN, line 95, thread R-1, swift#mapper#17000 = "input/dataset"
+2014-10-25 05:28:23,762+0000 INFO  TRACE APPCALL, line 9, thread R-3, reduce()
+2014-10-25 05:28:23,762+0000 DEBUG swift PROCEDURE line=9 thread=R-3 name=reduce
+2014-10-25 05:28:23,763+0000 INFO  TRACE APPCALL, line 66, thread R-3, k:block WAIT cout:file - Open
+2014-10-25 05:28:23,815+0000 INFO  GlobalSubmitQueue No global submit throttle set. Using default (1024)
+2014-10-25 05:28:23,816+0000 INFO  LateBindingScheduler jobs queued: 1
+2014-10-25 05:28:23,817+0000 INFO  LateBindingScheduler jobs queued: 1
+2014-10-25 05:28:23,817+0000 INFO  swift START host=localhost - Initializing shared directory
+2014-10-25 05:28:23,830+0000 INFO  LateBindingScheduler jobs queued: 0
+2014-10-25 05:28:23,888+0000 INFO  LateBindingScheduler jobs queued: 0
+2014-10-25 05:28:23,890+0000 INFO  LateBindingScheduler jobs queued: 0
+2014-10-25 05:28:23,890+0000 INFO  LateBindingScheduler jobs queued: 0
+2014-10-25 05:28:23,891+0000 INFO  LateBindingScheduler jobs queued: 0
+2014-10-25 05:28:23,892+0000 INFO  LateBindingScheduler jobs queued: 0
+2014-10-25 05:28:23,892+0000 INFO  swift END host=localhost - Done initializing shared directory
+2014-10-25 05:28:23,892+0000 DEBUG swift THREAD_ASSOCIATION jobid=python-zl397bzl thread=R-2 host=localhost replicationGroup=null
+2014-10-25 05:28:23,893+0000 INFO  swift START jobid=python-zl397bzl host=localhost - Initializing directory structure
+2014-10-25 05:28:23,893+0000 INFO  swift START path=wordcount dir=wordcount-run001/shared - Creating directory structure
+2014-10-25 05:28:23,893+0000 INFO  LateBindingScheduler jobs queued: 0
+2014-10-25 05:28:23,894+0000 INFO  swift START path=input dir=wordcount-run001/shared - Creating directory structure
+2014-10-25 05:28:23,894+0000 INFO  LateBindingScheduler jobs queued: 0
+2014-10-25 05:28:23,895+0000 INFO  swift START path=output dir=wordcount-run001/shared - Creating directory structure
+2014-10-25 05:28:23,895+0000 INFO  LateBindingScheduler jobs queued: 0
+2014-10-25 05:28:23,956+0000 INFO  swift END jobid=python-zl397bzl - Done initializing directory structure
+2014-10-25 05:28:23,956+0000 INFO  swift START jobid=python-zl397bzl - Staging in files [file://localhost/wordcount/Mapper.py, file://localhost/input/dataset]
+2014-10-25 05:28:23,972+0000 INFO  LateBindingScheduler jobs queued: 0
+2014-10-25 05:28:24,010+0000 DEBUG swift CDM: file://localhost/wordcount/Mapper.py : DEFAULT
+2014-10-25 05:28:24,012+0000 DEBUG swift FILE_STAGE_IN_START file=Mapper.py srchost=localhost srcdir=wordcount srcname=Mapper.py desthost=localhost destdir=wordcount-run001/shared/wordcount provider=file policy=DEFAULT
+2014-10-25 05:28:24,012+0000 INFO  LateBindingScheduler jobs queued: 0
+2014-10-25 05:28:24,066+0000 DEBUG swift CDM: file://localhost/input/dataset : DEFAULT
+2014-10-25 05:28:24,066+0000 DEBUG swift FILE_STAGE_IN_START file=dataset srchost=localhost srcdir=input srcname=dataset desthost=localhost destdir=wordcount-run001/shared/input provider=file policy=DEFAULT
+2014-10-25 05:28:24,083+0000 INFO  LateBindingScheduler jobs queued: 0
+2014-10-25 05:28:24,084+0000 DEBUG swift FILE_STAGE_IN_END file=Mapper.py srchost=localhost srcdir=wordcount srcname=Mapper.py desthost=localhost destdir=wordcount-run001/shared/wordcount provider=file
+2014-10-25 05:28:24,763+0000 INFO  RuntimeStats$ProgressTicker   Stage in:1
+2014-10-25 05:28:24,763+0000 INFO  RuntimeStats$ProgressTicker HeapMax: 1037959168, CrtHeap: 15794176, UsedHeap: 6360080
+2014-10-25 05:28:35,803+0000 INFO  LateBindingScheduler jobs queued: 0
+2014-10-25 05:28:35,803+0000 DEBUG swift FILE_STAGE_IN_END file=dataset srchost=localhost srcdir=input srcname=dataset desthost=localhost destdir=wordcount-run001/shared/input provider=file
+2014-10-25 05:28:35,806+0000 INFO  swift END jobid=python-zl397bzl - Staging in finished
+2014-10-25 05:28:35,806+0000 DEBUG swift JOB_START jobid=python-zl397bzl tr=python arguments=[wordcount/Mapper.py, input/dataset] tmpdir=wordcount-run001/jobs/z/python-zl397bzl host=localhost
+2014-10-25 05:28:36,030+0000 INFO  JobSubmissionTaskHandler Submit: in: /var/tmp/wordcount-run001 command: /bin/bash /var/tmp/wordcount-run001/shared/_swiftwrap python-zl397bzl -jobdir z -scratch  -e python -out output/intermediate.txt -err stderr.txt -i -d wordcount|input|output -if wordcount/Mapper.py|input/dataset -of output/intermediate.txt -cdmfile  -status files -a wordcount/Mapper.py input/dataset
+2014-10-25 05:28:36,782+0000 INFO  RuntimeStats$ProgressTicker   Active:1
+2014-10-25 05:28:36,782+0000 INFO  RuntimeStats$ProgressTicker HeapMax: 1037959168, CrtHeap: 15794176, UsedHeap: 7093424
+2014-10-25 05:29:06,902+0000 INFO  RuntimeStats$ProgressTicker   Active:1
+2014-10-25 05:29:06,902+0000 INFO  RuntimeStats$ProgressTicker HeapMax: 1037959168, CrtHeap: 15794176, UsedHeap: 7516024
+2014-10-25 05:29:37,053+0000 INFO  RuntimeStats$ProgressTicker   Active:1
+2014-10-25 05:29:37,053+0000 INFO  RuntimeStats$ProgressTicker HeapMax: 1037959168, CrtHeap: 15794176, UsedHeap: 7894056
+2014-10-25 05:30:07,207+0000 INFO  RuntimeStats$ProgressTicker   Active:1
+2014-10-25 05:30:07,207+0000 INFO  RuntimeStats$ProgressTicker HeapMax: 1037959168, CrtHeap: 15794176, UsedHeap: 8316408
+2014-10-25 05:30:37,371+0000 INFO  RuntimeStats$ProgressTicker   Active:1
+2014-10-25 05:30:37,371+0000 INFO  RuntimeStats$ProgressTicker HeapMax: 1037959168, CrtHeap: 15794176, UsedHeap: 8671352
+2014-10-25 05:31:07,525+0000 INFO  RuntimeStats$ProgressTicker   Active:1
+2014-10-25 05:31:07,525+0000 INFO  RuntimeStats$ProgressTicker HeapMax: 1037959168, CrtHeap: 15794176, UsedHeap: 9048968
+2014-10-25 05:31:31,775+0000 INFO  LateBindingScheduler jobs queued: 0
+2014-10-25 05:31:31,775+0000 DEBUG swift START jobid=python-zl397bzl
+2014-10-25 05:31:31,776+0000 INFO  LateBindingScheduler jobs queued: 0
+2014-10-25 05:31:31,776+0000 INFO  swift SUCCESS jobid=python-zl397bzl - Success file found
+2014-10-25 05:31:31,776+0000 DEBUG swift STAGING_OUT jobid=python-zl397bzl
+2014-10-25 05:31:31,776+0000 INFO  swift START jobid=python-zl397bzl - Staging out files
+2014-10-25 05:31:31,776+0000 DEBUG swift stageouts: [[$, cout:file - Open]]
+2014-10-25 05:31:31,777+0000 DEBUG swift FILE_STAGE_OUT_START srcname=intermediate.txt srcdir=wordcount-run001/shared/output srchost=localhost destdir=output desthost=localhost provider=file jobid=python-zl397bzl
+2014-10-25 05:31:31,778+0000 INFO  LateBindingScheduler jobs queued: 0
+2014-10-25 05:31:31,794+0000 DEBUG swift CDM: file://localhost/output/intermediate.txt : DEFAULT
+2014-10-25 05:31:32,627+0000 INFO  RuntimeStats$ProgressTicker   Stage out:1
+2014-10-25 05:31:32,627+0000 INFO  RuntimeStats$ProgressTicker HeapMax: 1037959168, CrtHeap: 15794176, UsedHeap: 9609632
+2014-10-25 05:31:45,391+0000 INFO  LateBindingScheduler jobs queued: 0
+2014-10-25 05:31:45,392+0000 DEBUG swift FILE_STAGE_OUT_END srcname=intermediate.txt srcdir=wordcount-run001/shared/output srchost=localhost destdir=output desthost=localhost provider=file
+2014-10-25 05:31:45,392+0000 INFO  LateBindingScheduler jobs queued: 0
+2014-10-25 05:31:45,393+0000 INFO  swift END jobid=python-zl397bzl - Staging out finished
+2014-10-25 05:31:45,393+0000 DEBUG swift JOB_END jobid=python-zl397bzl
+2014-10-25 05:31:45,394+0000 INFO  TRACE VARIABLE, line 15, thread R, cout INITIALIZED <SingleFileMapper; , file = file://localhost/output/intermediate.txt>
+2014-10-25 05:31:45,394+0000 INFO  swift END_SUCCESS thread=R-2 tr=python
+2014-10-25 05:31:45,427+0000 DEBUG swift PROCEDURE_END line=4 thread=R-2 name=map
+2014-10-25 05:31:45,428+0000 DEBUG swift THREAD_ASSOCIATION jobid=python-0m397bzl thread=R-3 host=localhost replicationGroup=null
+2014-10-25 05:31:45,428+0000 INFO  swift START jobid=python-0m397bzl host=localhost - Initializing directory structure
+2014-10-25 05:31:45,429+0000 INFO  swift END jobid=python-0m397bzl - Done initializing directory structure
+2014-10-25 05:31:45,429+0000 INFO  swift START jobid=python-0m397bzl - Staging in files [file://localhost/wordcount/Reducer.py, file://localhost/output/intermediate.txt]
+2014-10-25 05:31:45,446+0000 INFO  LateBindingScheduler jobs queued: 0
+2014-10-25 05:31:45,446+0000 INFO  LateBindingScheduler jobs queued: 0
+2014-10-25 05:31:45,447+0000 DEBUG swift CDM: file://localhost/wordcount/Reducer.py : DEFAULT
+2014-10-25 05:31:45,447+0000 DEBUG swift FILE_STAGE_IN_START file=Reducer.py srchost=localhost srcdir=wordcount srcname=Reducer.py desthost=localhost destdir=wordcount-run001/shared/wordcount provider=file policy=DEFAULT
+2014-10-25 05:31:45,493+0000 DEBUG swift CDM: file://localhost/output/intermediate.txt : DEFAULT
+2014-10-25 05:31:45,495+0000 INFO  LateBindingScheduler jobs queued: 0
+2014-10-25 05:31:45,495+0000 DEBUG swift FILE_STAGE_IN_END file=Reducer.py srchost=localhost srcdir=wordcount srcname=Reducer.py desthost=localhost destdir=wordcount-run001/shared/wordcount provider=file
+2014-10-25 05:31:45,495+0000 INFO  swift END jobid=python-0m397bzl - Staging in finished
+2014-10-25 05:31:45,495+0000 DEBUG swift JOB_START jobid=python-0m397bzl tr=python arguments=[wordcount/Reducer.py, output/intermediate.txt] tmpdir=wordcount-run001/jobs/0/python-0m397bzl host=localhost
+2014-10-25 05:31:45,527+0000 INFO  JobSubmissionTaskHandler Submit: in: /var/tmp/wordcount-run001 command: /bin/bash /var/tmp/wordcount-run001/shared/_swiftwrap python-0m397bzl -jobdir 0 -scratch  -e python -out output/WordCount-swift.txt -err stderr.txt -i -d wordcount|output -if wordcount/Reducer.py|output/intermediate.txt -of output/WordCount-swift.txt -cdmfile  -status files -a wordcount/Reducer.py output/intermediate.txt
+2014-10-25 05:31:45,634+0000 INFO  RuntimeStats$ProgressTicker   Active:2  Finished successfully:1
+2014-10-25 05:31:45,634+0000 INFO  RuntimeStats$ProgressTicker HeapMax: 1037959168, CrtHeap: 15794176, UsedHeap: 5553776
+2014-10-25 05:32:15,767+0000 INFO  RuntimeStats$ProgressTicker   Active:1  Finished successfully:1
+2014-10-25 05:32:15,767+0000 INFO  RuntimeStats$ProgressTicker HeapMax: 1037959168, CrtHeap: 15794176, UsedHeap: 5978856
+2014-10-25 05:32:45,941+0000 INFO  RuntimeStats$ProgressTicker   Active:2  Finished successfully:1
+2014-10-25 05:32:45,941+0000 INFO  RuntimeStats$ProgressTicker HeapMax: 1037959168, CrtHeap: 15794176, UsedHeap: 6374824
+2014-10-25 05:33:16,090+0000 INFO  RuntimeStats$ProgressTicker   Active:1  Finished successfully:1
+2014-10-25 05:33:16,090+0000 INFO  RuntimeStats$ProgressTicker HeapMax: 1037959168, CrtHeap: 15794176, UsedHeap: 6753416
+2014-10-25 05:33:46,286+0000 INFO  RuntimeStats$ProgressTicker   Active:2  Finished successfully:1
+2014-10-25 05:33:46,286+0000 INFO  RuntimeStats$ProgressTicker HeapMax: 1037959168, CrtHeap: 15794176, UsedHeap: 7132760
+2014-10-25 05:34:16,466+0000 INFO  RuntimeStats$ProgressTicker   Active:1  Finished successfully:1
+2014-10-25 05:34:16,466+0000 INFO  RuntimeStats$ProgressTicker HeapMax: 1037959168, CrtHeap: 15794176, UsedHeap: 7512192
+2014-10-25 05:34:46,605+0000 INFO  RuntimeStats$ProgressTicker   Active:2  Finished successfully:1
+2014-10-25 05:34:46,605+0000 INFO  RuntimeStats$ProgressTicker HeapMax: 1037959168, CrtHeap: 15794176, UsedHeap: 7936744
+2014-10-25 05:35:17,149+0000 INFO  RuntimeStats$ProgressTicker   Active:1  Finished successfully:1
+2014-10-25 05:35:17,149+0000 INFO  RuntimeStats$ProgressTicker HeapMax: 1037959168, CrtHeap: 15794176, UsedHeap: 8217632
+2014-10-25 05:35:47,786+0000 INFO  RuntimeStats$ProgressTicker   Active:2  Finished successfully:1
+2014-10-25 05:35:47,786+0000 INFO  RuntimeStats$ProgressTicker HeapMax: 1037959168, CrtHeap: 15794176, UsedHeap: 8446184
+2014-10-25 05:36:18,443+0000 INFO  RuntimeStats$ProgressTicker   Active:1  Finished successfully:1
+2014-10-25 05:36:18,443+0000 INFO  RuntimeStats$ProgressTicker HeapMax: 1037959168, CrtHeap: 15794176, UsedHeap: 8694080
+2014-10-25 05:36:49,136+0000 INFO  RuntimeStats$ProgressTicker   Active:2  Finished successfully:1
+2014-10-25 05:36:49,136+0000 INFO  RuntimeStats$ProgressTicker HeapMax: 1037959168, CrtHeap: 15794176, UsedHeap: 8926456
+2014-10-25 05:37:19,789+0000 INFO  RuntimeStats$ProgressTicker   Active:1  Finished successfully:1
+2014-10-25 05:37:19,789+0000 INFO  RuntimeStats$ProgressTicker HeapMax: 1037959168, CrtHeap: 15794176, UsedHeap: 9141560
+2014-10-25 05:37:50,414+0000 INFO  RuntimeStats$ProgressTicker   Active:2  Finished successfully:1
+2014-10-25 05:37:50,414+0000 INFO  RuntimeStats$ProgressTicker HeapMax: 1037959168, CrtHeap: 15794176, UsedHeap: 9389464
+2014-10-25 05:38:21,029+0000 INFO  RuntimeStats$ProgressTicker   Active:1  Finished successfully:1
+2014-10-25 05:38:21,029+0000 INFO  RuntimeStats$ProgressTicker HeapMax: 1037959168, CrtHeap: 15794176, UsedHeap: 9604696
+2014-10-25 05:38:51,737+0000 INFO  RuntimeStats$ProgressTicker   Active:2  Finished successfully:1
+2014-10-25 05:38:51,737+0000 INFO  RuntimeStats$ProgressTicker HeapMax: 1037959168, CrtHeap: 15794176, UsedHeap: 5356376
+2014-10-25 05:39:22,348+0000 INFO  RuntimeStats$ProgressTicker   Active:1  Finished successfully:1
+2014-10-25 05:39:22,348+0000 INFO  RuntimeStats$ProgressTicker HeapMax: 1037959168, CrtHeap: 15794176, UsedHeap: 5631120
+2014-10-25 05:39:53,021+0000 INFO  RuntimeStats$ProgressTicker   Active:2  Finished successfully:1
+2014-10-25 05:39:53,021+0000 INFO  RuntimeStats$ProgressTicker HeapMax: 1037959168, CrtHeap: 15794176, UsedHeap: 5837488
+2014-10-25 05:40:23,643+0000 INFO  RuntimeStats$ProgressTicker   Active:1  Finished successfully:1
+2014-10-25 05:40:23,643+0000 INFO  RuntimeStats$ProgressTicker HeapMax: 1037959168, CrtHeap: 15794176, UsedHeap: 6092008
+2014-10-25 05:40:54,256+0000 INFO  RuntimeStats$ProgressTicker   Active:2  Finished successfully:1
+2014-10-25 05:40:54,256+0000 INFO  RuntimeStats$ProgressTicker HeapMax: 1037959168, CrtHeap: 15794176, UsedHeap: 6298368
+2014-10-25 05:41:24,911+0000 INFO  RuntimeStats$ProgressTicker   Active:1  Finished successfully:1
+2014-10-25 05:41:24,911+0000 INFO  RuntimeStats$ProgressTicker HeapMax: 1037959168, CrtHeap: 15794176, UsedHeap: 6561944
+2014-10-25 05:41:55,585+0000 INFO  RuntimeStats$ProgressTicker   Active:2  Finished successfully:1
+2014-10-25 05:41:55,585+0000 INFO  RuntimeStats$ProgressTicker HeapMax: 1037959168, CrtHeap: 15794176, UsedHeap: 6779672
+2014-10-25 05:42:26,195+0000 INFO  RuntimeStats$ProgressTicker   Active:1  Finished successfully:1
+2014-10-25 05:42:26,195+0000 INFO  RuntimeStats$ProgressTicker HeapMax: 1037959168, CrtHeap: 15794176, UsedHeap: 7034072
+2014-10-25 05:42:56,887+0000 INFO  RuntimeStats$ProgressTicker   Active:2  Finished successfully:1
+2014-10-25 05:42:56,887+0000 INFO  RuntimeStats$ProgressTicker HeapMax: 1037959168, CrtHeap: 15794176, UsedHeap: 7240440
+2014-10-25 05:43:27,525+0000 INFO  RuntimeStats$ProgressTicker   Active:1  Finished successfully:1
+2014-10-25 05:43:27,525+0000 INFO  RuntimeStats$ProgressTicker HeapMax: 1037959168, CrtHeap: 15794176, UsedHeap: 7494920
+2014-10-25 05:43:58,229+0000 INFO  RuntimeStats$ProgressTicker   Active:2  Finished successfully:1
+2014-10-25 05:43:58,229+0000 INFO  RuntimeStats$ProgressTicker HeapMax: 1037959168, CrtHeap: 15794176, UsedHeap: 7721552
+2014-10-25 05:44:28,832+0000 INFO  RuntimeStats$ProgressTicker   Active:1  Finished successfully:1
+2014-10-25 05:44:28,832+0000 INFO  RuntimeStats$ProgressTicker HeapMax: 1037959168, CrtHeap: 15794176, UsedHeap: 7976008
+2014-10-25 05:44:59,511+0000 INFO  RuntimeStats$ProgressTicker   Active:2  Finished successfully:1
+2014-10-25 05:44:59,511+0000 INFO  RuntimeStats$ProgressTicker HeapMax: 1037959168, CrtHeap: 15794176, UsedHeap: 8182288
+2014-10-25 05:45:30,092+0000 INFO  RuntimeStats$ProgressTicker   Active:1  Finished successfully:1
+2014-10-25 05:45:30,092+0000 INFO  RuntimeStats$ProgressTicker HeapMax: 1037959168, CrtHeap: 15794176, UsedHeap: 8436776
+2014-10-25 05:45:58,145+0000 INFO  LateBindingScheduler jobs queued: 0
+2014-10-25 05:45:58,146+0000 DEBUG swift START jobid=python-0m397bzl
+2014-10-25 05:45:58,146+0000 INFO  LateBindingScheduler jobs queued: 0
+2014-10-25 05:45:58,147+0000 INFO  swift SUCCESS jobid=python-0m397bzl - Success file found
+2014-10-25 05:45:58,147+0000 DEBUG swift STAGING_OUT jobid=python-0m397bzl
+2014-10-25 05:45:58,147+0000 INFO  swift START jobid=python-0m397bzl - Staging out files
+2014-10-25 05:45:58,147+0000 DEBUG swift stageouts: [[$, cout2:file - Open]]
+2014-10-25 05:45:58,147+0000 DEBUG swift FILE_STAGE_OUT_START srcname=WordCount-swift.txt srcdir=wordcount-run001/shared/output srchost=localhost destdir=output desthost=localhost provider=file jobid=python-0m397bzl
+2014-10-25 05:45:58,148+0000 INFO  LateBindingScheduler jobs queued: 0
+2014-10-25 05:45:58,148+0000 DEBUG swift CDM: file://localhost/output/WordCount-swift.txt : DEFAULT
+2014-10-25 05:45:58,223+0000 INFO  LateBindingScheduler jobs queued: 0
+2014-10-25 05:45:58,223+0000 DEBUG swift FILE_STAGE_OUT_END srcname=WordCount-swift.txt srcdir=wordcount-run001/shared/output srchost=localhost destdir=output desthost=localhost provider=file
+2014-10-25 05:45:58,223+0000 INFO  LateBindingScheduler jobs queued: 0
+2014-10-25 05:45:58,224+0000 INFO  swift END jobid=python-0m397bzl - Staging out finished
+2014-10-25 05:45:58,224+0000 DEBUG swift JOB_END jobid=python-0m397bzl
+2014-10-25 05:45:58,224+0000 INFO  TRACE VARIABLE, line 18, thread R, cout2 INITIALIZED <SingleFileMapper; , file = file://localhost/output/WordCount-swift.txt>
+2014-10-25 05:45:58,224+0000 INFO  swift END_SUCCESS thread=R-3 tr=python
+2014-10-25 05:45:58,224+0000 DEBUG swift PROCEDURE_END line=9 thread=R-3 name=reduce
+2014-10-25 05:45:58,225+0000 INFO  RuntimeStats$ProgressTicker   Finished successfully:2
+2014-10-25 05:45:58,225+0000 INFO  RuntimeStats$ProgressTicker HeapMax: 1037959168, CrtHeap: 15794176, UsedHeap: 8804064
+2014-10-25 05:45:58,339+0000 DEBUG swift Starting cleanups
+2014-10-25 05:45:58,365+0000 INFO  swift START cleanups=[[wordcount-run001, localhost]]
+2014-10-25 05:45:58,365+0000 INFO  swift START dir=wordcount-run001 host=localhost
+2014-10-25 05:45:58,365+0000 DEBUG swift cdmfile 
+2014-10-25 05:45:58,365+0000 INFO  JobSubmissionTaskHandler Submit: in: /var/tmp command: /bin/rm -rf wordcount-run001
+2014-10-25 05:45:58,365+0000 INFO  LateBindingScheduler jobs queued: 0
+2014-10-25 05:45:58,366+0000 INFO  swift END dir=wordcount-run001 host=localhost
+2014-10-25 05:45:58,366+0000 INFO  swift END cleanups=[[wordcount-run001, localhost]]
+2014-10-25 05:45:58,366+0000 DEBUG swift Ending cleanups
+2014-10-25 05:45:58,366+0000 INFO  SwiftFunction Cleaning cout2:file = java.lang.Object@d918f6c - Closed
+2014-10-25 05:45:58,367+0000 INFO  SwiftFunction Cleaning freducer:file = java.lang.Object@d918f6c - Closed
+2014-10-25 05:45:58,367+0000 INFO  SwiftFunction Cleaning fmapper:file = java.lang.Object@d918f6c - Closed
+2014-10-25 05:45:58,367+0000 INFO  SwiftFunction Cleaning cout:file = java.lang.Object@d918f6c - Closed
+2014-10-25 05:45:58,367+0000 INFO  SwiftFunction Cleaning inputfile:file = java.lang.Object@d918f6c - Closed
+2014-10-25 05:45:58,447+0000 INFO  Loader Swift finished with no errors
